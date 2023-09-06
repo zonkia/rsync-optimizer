@@ -5,6 +5,7 @@ import time
 parent_dir = "/mnt/source"
 destination_dir = "/mnt/destination"
 script_path = os.path.dirname(os.path.abspath(__file__))
+exceptions = ["#recyle"]
 
 try:
     with open(f'{script_path}/already_done.txt', encoding='utf8') as f:
@@ -26,20 +27,19 @@ os.chdir(os.path.abspath(parent_dir))
 folders = sorted(os.listdir())
 
 for folder in folders:
-    print(folder)
     if folder in already_done or os.path.isfile(os.path.abspath(folder)):
-        print(folder, "already in list")
+        print(folder, "already in list\n---")
         continue
     os.chdir(os.path.abspath(folder))
     subfolders = sorted(os.listdir())
-
     for subfolder in subfolders:
-        if str(folder + "/" + subfolder) in already_done:
+        if str(folder + "/" + subfolder) in already_done or folder in exceptions or subfolder in exceptions:
+            print(folder + "/" + subfolder + " already in list\n---")
             continue
         if os.path.isfile(os.path.abspath(subfolder)):
             #subfolder is file!
             result = "Error"
-            print("RSYNC file")
+            print(f"---\nRSYNC file: {folder}/{subfolder}")
             while result != "Ok":
                 result = str(subprocess.run(['rsync', '--ignore-existing',  '-vrh', f'/{parent_dir}/{folder}/{subfolder}', f'/{destination_dir}/{folder}/'], check=False).returncode).replace("0", "Ok")
                 if result != "Ok":
@@ -49,12 +49,14 @@ for folder in folders:
                 file.write(str(already_done))
             continue
         os.chdir(os.path.abspath(subfolder))
+        print(os.listdir())
         subsubfolders = sorted(os.listdir())
         for subsubfolder in subsubfolders:
-            if str(folder + "/" + subfolder + "/" + subsubfolder) in already_done:
+            if str(folder + "/" + subfolder + "/" + subsubfolder) in already_done or folder in exceptions or subfolder in exceptions or subsubfolder in exceptions:
+                print(folder + "/" + subfolder + "/" + subsubfolder + " already in list\n---")
                 continue
             result = "Error"
-            print("RSYNC directory")
+            print(f"---\nRSYNC directory: {folder}/{subfolder}/{subsubfolder}")
             subprocess.run(['mkdir', '-p', f'{destination_dir}/{folder}'], check=False)
             while result != "Ok":
                 result = str(subprocess.run(['rsync', '--ignore-existing',  '-vrh', f'{parent_dir}/{folder}/{subfolder}/{subsubfolder}', f'{destination_dir}/{folder}/{subfolder}/'], check=False).returncode).replace("0", "Ok")
@@ -68,3 +70,4 @@ for folder in folders:
     already_done.add(str(folder))
     with open(f'{script_path}/already_done.txt', 'w', encoding='utf8') as file:
         file.write(str(already_done))
+
