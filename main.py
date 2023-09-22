@@ -19,6 +19,8 @@ already_done = set()
 
 for file in already_done_from_file:
     filename = file.replace("{'","").replace("'}","").replace(" '","")
+    if filename == "":
+        continue
     if "'" == filename[-1]:
         filename = filename[:-1]
     already_done.add(filename)
