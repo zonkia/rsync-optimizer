@@ -27,7 +27,7 @@ os.chdir(os.path.abspath(parent_dir))
 folders = sorted(os.listdir())
 
 for folder in folders:
-    if folder in already_done or os.path.isfile(os.path.abspath(folder)):
+    if folder in already_done or os.path.isfile(os.path.abspath(folder)) or folder in exceptions:
         print(folder, "already in list\n---")
         continue
     os.chdir(os.path.abspath(folder))
