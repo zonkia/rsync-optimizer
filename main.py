@@ -43,7 +43,7 @@ for folder in folders:
             result = "Error"
             print(f"---\nRSYNC file: {folder}/{subfolder}")
             while result != "Ok":
-                result = str(subprocess.run(['rsync', '--ignore-existing',  '-vrh', f'/{parent_dir}/{folder}/{subfolder}', f'/{destination_dir}/{folder}/'], check=False).returncode).replace("0", "Ok")
+                result = str(subprocess.run(['rsync', '-vrh', f'/{parent_dir}/{folder}/{subfolder}', f'/{destination_dir}/{folder}/'], check=False).returncode).replace("0", "Ok")
                 if result != "Ok":
                     time.sleep(5)
             already_done.add(str(folder + "/" + subfolder))
@@ -61,7 +61,7 @@ for folder in folders:
             print(f"---\nRSYNC directory: {folder}/{subfolder}/{subsubfolder}")
             subprocess.run(['mkdir', '-p', f'{destination_dir}/{folder}'], check=False)
             while result != "Ok":
-                result = str(subprocess.run(['rsync', '--ignore-existing',  '-vrh', f'{parent_dir}/{folder}/{subfolder}/{subsubfolder}', f'{destination_dir}/{folder}/{subfolder}/'], check=False).returncode).replace("0", "Ok")
+                result = str(subprocess.run(['rsync', '-vrh', f'{parent_dir}/{folder}/{subfolder}/{subsubfolder}', f'{destination_dir}/{folder}/{subfolder}/'], check=False).returncode).replace("0", "Ok")
                 if result != "Ok":
                     time.sleep(5)
             already_done.add(str(folder + "/" + subfolder + "/" + subsubfolder))
