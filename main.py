@@ -32,7 +32,6 @@ for folder in folders:
     if folder in already_done or folder in exceptions:
         print(folder, "already in list\n---")
         continue
-
     if os.path.isfile(os.path.abspath(folder)):
         #folder is file!
         result = "Error"
@@ -44,7 +43,6 @@ for folder in folders:
         already_done.add(str(folder))
         with open(f'{script_path}/already_done.txt', 'w', encoding='utf8') as file:
             file.write(str(already_done))
-
         continue
     os.chdir(os.path.abspath(folder))
     subfolders = sorted(os.listdir())
@@ -68,6 +66,7 @@ for folder in folders:
         os.chdir(os.path.abspath(subfolder))
         print(os.listdir())
         subsubfolders = sorted(os.listdir())
+
         for subsubfolder in subsubfolders:
             if str(folder + "/" + subfolder + "/" + subsubfolder) in already_done or folder in exceptions or subfolder in exceptions or subsubfolder in exceptions:
                 print(folder + "/" + subfolder + "/" + subsubfolder + " already in list\n---")
